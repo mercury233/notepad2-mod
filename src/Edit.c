@@ -4882,6 +4882,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 #ifdef BOOKMARK_EDITION
         static BOOL bFirstTime = TRUE;
+        BOOL hasFindText = FALSE;
 #endif
 
         WCHAR tch[128];
@@ -4915,7 +4916,8 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 
 #ifdef BOOKMARK_EDITION
             // First time you bring up find/replace dialog, copy content from clipboard to find box (but only if nothing is selected in the editor)
-            if (lstrcmpA( lpszSelection , "" ) == 0  &&  bFirstTime )
+            hasFindText = lstrcmpA(lpszSelection, "") != 0;
+            if (hasFindText && bFirstTime)
             {
                 char *pClip = EditGetClipboardText(hwndEdit);
                 if( lstrlenA( pClip ) > 0  &&  lstrlenA( pClip ) <= 500 )
@@ -4950,11 +4952,18 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
         if (!GetWindowTextLengthW(GetDlgItem(hwnd,IDC_FINDTEXT)))
           SetDlgItemTextA2W(CP_UTF8,hwnd,IDC_FINDTEXT,lpefr->szFindUTF8);
 
-        if (GetDlgItem(hwnd,IDC_REPLACETEXT))
+        HWND hwndRepl = GetDlgItem(hwnd, IDC_REPLACETEXT);
+        if (hwndRepl)
         {
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_LIMITTEXT,500,0);
           SendDlgItemMessage(hwnd,IDC_REPLACETEXT,CB_SETEXTENDEDUI,TRUE,0);
           SetDlgItemTextA2W(CP_UTF8,hwnd,IDC_REPLACETEXT,lpefr->szReplaceUTF8);
+#ifdef BOOKMARK_EDITION
+          if (hasFindText) {
+              // focus on replace box when selected text is not empty.
+              PostMessage(hwnd, WM_NEXTDLGCTL, (WPARAM)hwndRepl, 1);
+          }
+#endif
         }
 
         if (lpefr->fuFlags & SCFIND_MATCHCASE)
