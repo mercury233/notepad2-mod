@@ -55,6 +55,7 @@ extern int xFindReplaceDlg;
 extern int yFindReplaceDlg;
 
 extern int iDefaultEncoding;
+extern int iLastUsedEncoding;
 extern int iDefaultEOLMode;
 extern int iLineEndings[3];
 extern BOOL bFixLineEndings;

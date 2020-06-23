@@ -143,6 +143,7 @@ BOOL      bShowCodeFolding;
 BOOL      bViewWhiteSpace;
 BOOL      bViewEOLs;
 int       iDefaultEncoding;
+int       iLastUsedEncoding;
 BOOL      bSkipUnicodeDetection;
 BOOL      bLoadASCIIasUTF8;
 BOOL      bLoadNFOasOEM;
@@ -2054,6 +2055,7 @@ void MsgInitMenu(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
   i = lstrlen(szCurFile);
   EnableCmd(hmenu,IDM_FILE_REVERT,i);
+  EnableCmd(hmenu, CMD_RECODELASTUSED, i);
   EnableCmd(hmenu, CMD_RELOADASCIIASUTF8, i);
   EnableCmd(hmenu, CMD_RELOADANSI, i);
   EnableCmd(hmenu, CMD_RELOADOEM, i);
@@ -2795,6 +2797,7 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
 
             lstrcpy(tchCurFile2,szCurFile);
             iSrcEncoding = iNewEncoding;
+            iLastUsedEncoding = iNewEncoding;
             FileLoad(TRUE,FALSE,TRUE,FALSE,tchCurFile2);
           }
         }
@@ -4507,6 +4510,16 @@ LRESULT MsgCommand(HWND hwnd,WPARAM wParam,LPARAM lParam)
       }
       break;
 
+    case CMD_RECODELASTUSED:
+      {
+        WCHAR tchCurFile2[MAX_PATH];
+        if(lstrlen(szCurFile)) {
+            iSrcEncoding = iLastUsedEncoding;
+            lstrcpy(tchCurFile2, szCurFile);
+            FileLoad(FALSE, FALSE, TRUE, FALSE, tchCurFile2);
+        }
+      }
+      break;
 
     case CMD_LEXDEFAULT:
       Style_SetDefaultLexer(hwndEdit);
@@ -5617,6 +5630,10 @@ void LoadSettings()
   iDefaultEncoding = Encoding_MapIniSetting(TRUE,iDefaultEncoding);
   if (!Encoding_IsValid(iDefaultEncoding)) iDefaultEncoding = CPI_UTF8;
 
+  iLastUsedEncoding = IniSectionGetInt(pIniSection,L"LastUsedEncoding",0);
+  iLastUsedEncoding = Encoding_MapIniSetting(TRUE,iLastUsedEncoding);
+  if (!Encoding_IsValid(iLastUsedEncoding)) iLastUsedEncoding = CPI_UTF8;
+
   bSkipUnicodeDetection = IniSectionGetInt(pIniSection,L"SkipUnicodeDetection",0);
   if (bSkipUnicodeDetection) bSkipUnicodeDetection = 1;
 
@@ -5865,6 +5882,7 @@ void SaveSettings(BOOL bSaveSettingsNow)
   IniSectionSetInt(pIniSection,L"ViewWhiteSpace",bViewWhiteSpace);
   IniSectionSetInt(pIniSection,L"ViewEOLs",bViewEOLs);
   IniSectionSetInt(pIniSection,L"DefaultEncoding",Encoding_MapIniSetting(FALSE,iDefaultEncoding));
+  IniSectionSetInt(pIniSection,L"LastUsedEncoding",Encoding_MapIniSetting(FALSE, iLastUsedEncoding));
   IniSectionSetInt(pIniSection,L"SkipUnicodeDetection",bSkipUnicodeDetection);
   IniSectionSetInt(pIniSection,L"LoadASCIIasUTF8",bLoadASCIIasUTF8);
   IniSectionSetInt(pIniSection,L"LoadNFOasOEM",bLoadNFOasOEM);

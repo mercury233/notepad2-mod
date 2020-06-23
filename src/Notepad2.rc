@@ -80,6 +80,7 @@ BEGIN
             MENUITEM "As &OEM\tCtrl+Shift+O",       CMD_RELOADOEM
             MENUITEM "&No FileVars\tAlt+F8",        CMD_RELOADNOFILEVARS
             MENUITEM "&Default\tCtrl+Alt+F",        CMD_RECODEDEFAULT
+            MENUITEM "&Last Used\tF8",              CMD_RECODELASTUSED
         END
         POPUP "&Launch"
         BEGIN
@@ -103,7 +104,7 @@ BEGIN
             MENUITEM "UTF-8 with &Signature",       IDM_ENCODING_UTF8SIGN
             MENUITEM "&More...\tF9",                IDM_ENCODING_SELECT
             MENUITEM SEPARATOR
-            MENUITEM "&Recode...\tF8",              IDM_ENCODING_RECODE
+            MENUITEM "&Recode...",                  IDM_ENCODING_RECODE
             MENUITEM SEPARATOR
             MENUITEM "&Default...",                 IDM_ENCODING_SETDEFAULT
         END
@@ -587,7 +588,7 @@ BEGIN
     VK_F6,          IDM_FILE_SAVECOPY,      VIRTKEY, CONTROL, NOINVERT
     VK_F7,          IDM_VIEW_SAVESETTINGSNOW, VIRTKEY, NOINVERT
     VK_F7,          CMD_OPENINIFILE,        VIRTKEY, CONTROL, NOINVERT
-    VK_F8,          IDM_ENCODING_RECODE,    VIRTKEY, NOINVERT
+    VK_F8,          CMD_RECODELASTUSED,     VIRTKEY, NOINVERT
     VK_F8,          IDM_EDIT_INSERT_ENCODING, VIRTKEY, CONTROL, NOINVERT
     VK_F8,          CMD_RELOADNOFILEVARS,   VIRTKEY, ALT, NOINVERT
     VK_F8,          CMD_RELOADASCIIASUTF8,  VIRTKEY, SHIFT, NOINVERT
