@@ -4918,7 +4918,7 @@ INT_PTR CALLBACK EditFindReplaceDlgProcW(HWND hwnd,UINT umsg,WPARAM wParam,LPARA
 #ifdef BOOKMARK_EDITION
             // First time you bring up find/replace dialog, copy content from clipboard to find box (but only if nothing is selected in the editor)
             hasFindText = lstrcmpA(lpszSelection, "") != 0;
-            if (hasFindText && bFirstTime)
+            if (!hasFindText && bFirstTime)
             {
                 char *pClip = EditGetClipboardText(hwndEdit);
                 if( lstrlenA( pClip ) > 0  &&  lstrlenA( pClip ) <= 500 )
